@@ -8,6 +8,7 @@ public class CustomArrayList<E> implements CustomList<E> {
     private Object[] arr;
     private int size;
     private static final int DEFAULT_CAPACITY = 10;
+    private static final double DEFAULT_CAPACITY_INCREMENT = 1.5;
 
     private class CustomArrayListIterator implements Iterator<E> {
 
@@ -19,6 +20,7 @@ public class CustomArrayList<E> implements CustomList<E> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
@@ -62,7 +64,7 @@ public class CustomArrayList<E> implements CustomList<E> {
     @Override
     public void add(E o) {
         if (size == arr.length) {
-            arr = Arrays.copyOf(arr, (int) (arr.length * 1.5));
+            arr = Arrays.copyOf(arr, (int) (arr.length * DEFAULT_CAPACITY_INCREMENT));
         }
 
         arr[size] = o;
@@ -75,6 +77,7 @@ public class CustomArrayList<E> implements CustomList<E> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public E get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
@@ -106,7 +109,7 @@ public class CustomArrayList<E> implements CustomList<E> {
 
     @Override
     public boolean remove(Object o) {
-        int removingIndex = indexOf((E) o);
+        int removingIndex = indexOf(o);
 
         if (removingIndex == -1) {
             throw new IllegalStateException("element not found");
@@ -129,10 +132,11 @@ public class CustomArrayList<E> implements CustomList<E> {
     }
 
     public void trimToSize() {
-        arr = Arrays.copyOf(arr, size);
+        int newCapacity = arr.length == 0 ? DEFAULT_CAPACITY : (int) (arr.length * DEFAULT_CAPACITY_INCREMENT);
+        arr = Arrays.copyOf(arr, newCapacity);
     }
 
-    public int indexOf(E o) {
+    public int indexOf(Object o) {
         for (int i = 0; i < size; i++) {
             if (Objects.equals(arr[i], o)) {
                 return i;

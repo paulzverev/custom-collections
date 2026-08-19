@@ -3,8 +3,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class CustomLinkedList<E> implements CustomList<E> {
-    private Node<E> head;
 
+    private Node<E> head;
     private int size;
 
     private static class Node<E> {
