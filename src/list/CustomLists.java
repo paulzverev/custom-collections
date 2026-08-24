@@ -1,3 +1,5 @@
+package list;
+
 import java.util.function.Supplier;
 
 public class CustomLists {

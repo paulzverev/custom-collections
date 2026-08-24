@@ -1,3 +1,5 @@
+package list;
+
 public interface CustomList<E> extends DefaultCustomList<E> {
 
     int size();

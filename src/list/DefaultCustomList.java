@@ -1,3 +1,5 @@
+package list;
+
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
