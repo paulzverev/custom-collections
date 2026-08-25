@@ -6,14 +6,14 @@ public class CustomHashMap<K, V> {
 
     private Node<K, V>[] buckets;
 
-    private static final int DEFAULT_CAPACITY = 16;
+    private static final int DEFAULT_INITIAL_CAPACITY = 16;
     private int capacity;
     private int size;
 
     @SuppressWarnings("unchecked")
     public CustomHashMap() {
-        buckets = new Node[DEFAULT_CAPACITY];
-        capacity = DEFAULT_CAPACITY;
+        buckets = new Node[DEFAULT_INITIAL_CAPACITY];
+        capacity = DEFAULT_INITIAL_CAPACITY;
     }
 
     private static class Node<K, V> {
@@ -31,28 +31,30 @@ public class CustomHashMap<K, V> {
     }
 
     public void put(K key, V value) {
-        int incomingKeyHashCode = toOptimizedHashCode(key);
-        int bucketIndex = getBucketIndex(incomingKeyHashCode);
-        Node<K, V> existing = buckets[bucketIndex];
+        int keyHashCode = toOptimizedHashCode(key);
+        int bucketIndex = getBucketIndex(keyHashCode);
 
-        if (existing == null) {
-            buckets[bucketIndex] = new Node<>(key, value, incomingKeyHashCode);
+        Node<K, V> current = buckets[bucketIndex];
+
+        if (current == null) {
+            buckets[bucketIndex] = new Node<>(key, value, keyHashCode);
             size++;
-        } else {
-            if (existing.hashCode == incomingKeyHashCode) {
-                if (Objects.equals(existing.key, key)) {
-                    existing.value = value;
-                }
-            } else {
-                Node<K, V> current = buckets[bucketIndex];
+            return;
+        }
 
-                while (current.next != null) {
-                    current = current.next;
-                }
-
-                current.next = new Node<>(key, value, incomingKeyHashCode);
-                size++;
+        while (true) {
+            if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
+                current.value = value;
+                return;
             }
+
+            if (current.next == null) {
+                current.next = new Node<>(key, value, keyHashCode);
+                size++;
+                return;
+            }
+
+            current = current.next;
         }
     }
 
