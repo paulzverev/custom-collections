@@ -20,7 +20,7 @@ public class CustomHashMap<K, V> {
 
         private final K key;
         private V value;
-        private int hashCode;
+        private final int hashCode;
         private Node<K, V> next;
 
         private Node(K key, V value, int hashCode) {
@@ -56,6 +56,23 @@ public class CustomHashMap<K, V> {
 
             current = current.next;
         }
+    }
+
+    private boolean contains(K key) {
+        int keyHashCode = toOptimizedHashCode(key);
+        int bucketIndex = getBucketIndex(keyHashCode);
+
+        Node<K, V> current = buckets[bucketIndex];
+
+        while (current != null) {
+            if (Objects.equals(current.key, key)) {
+                return true;
+            }
+
+            current = current.next;
+        }
+
+        return false;
     }
 
     private static int toOptimizedHashCode(Object o) {
