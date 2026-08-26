@@ -65,7 +65,7 @@ public class CustomHashMap<K, V> {
         Node<K, V> current = buckets[bucketIndex];
 
         while (current != null) {
-            if (Objects.equals(current.key, key)) {
+            if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
                 return true;
             }
 
@@ -73,6 +73,23 @@ public class CustomHashMap<K, V> {
         }
 
         return false;
+    }
+
+    private V get(K key) {
+        int keyHashCode = toOptimizedHashCode(key);
+        int bucketIndex = getBucketIndex(keyHashCode);
+
+        Node<K, V> current = buckets[bucketIndex];
+
+        while (current != null) {
+            if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
+                return current.value;
+            }
+
+            current = current.next;
+        }
+
+        return null;
     }
 
     private static int toOptimizedHashCode(Object o) {
