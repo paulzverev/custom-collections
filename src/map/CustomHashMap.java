@@ -92,6 +92,32 @@ public class CustomHashMap<K, V> {
         return null;
     }
 
+    private V remove(K key) {
+        int keyHashCode = toOptimizedHashCode(key);
+        int bucketIndex = getBucketIndex(keyHashCode);
+
+        Node<K, V> prev = null;
+        Node<K, V> current = buckets[bucketIndex];
+
+        while (current != null) {
+            if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
+                if (prev != null) {
+                    prev.next = current.next;
+                } else {
+                    buckets[bucketIndex] = current.next;
+                }
+
+                size--;
+                return current.value;
+            }
+
+            prev = current;
+            current = current.next;
+        }
+
+        return null;
+    }
+
     private static int toOptimizedHashCode(Object o) {
         if (o == null) {
             return 0;
