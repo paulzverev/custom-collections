@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class CustomHashMap<K, V> {
 
-    private Node<K, V>[] buckets;
+    private Entry<K, V>[] buckets;
 
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
     private int capacity;
@@ -12,18 +12,18 @@ public class CustomHashMap<K, V> {
 
     @SuppressWarnings("unchecked")
     public CustomHashMap() {
-        buckets = new Node[DEFAULT_INITIAL_CAPACITY];
+        buckets = new Entry[DEFAULT_INITIAL_CAPACITY];
         capacity = DEFAULT_INITIAL_CAPACITY;
     }
 
-    private static class Node<K, V> {
+    private static class Entry<K, V> {
 
         private final K key;
         private V value;
         private final int hashCode;
-        private Node<K, V> next;
+        private Entry<K, V> next;
 
-        private Node(K key, V value, int hashCode) {
+        private Entry(K key, V value, int hashCode) {
             this.key = key;
             this.value = value;
             this.hashCode = hashCode;
@@ -34,10 +34,10 @@ public class CustomHashMap<K, V> {
         int keyHashCode = toOptimizedHashCode(key);
         int bucketIndex = getBucketIndex(keyHashCode);
 
-        Node<K, V> current = buckets[bucketIndex];
+        Entry<K, V> current = buckets[bucketIndex];
 
         if (current == null) {
-            buckets[bucketIndex] = new Node<>(key, value, keyHashCode);
+            buckets[bucketIndex] = new Entry<>(key, value, keyHashCode);
             size++;
             return;
         }
@@ -49,7 +49,7 @@ public class CustomHashMap<K, V> {
             }
 
             if (current.next == null) {
-                current.next = new Node<>(key, value, keyHashCode);
+                current.next = new Entry<>(key, value, keyHashCode);
                 size++;
                 return;
             }
@@ -62,7 +62,7 @@ public class CustomHashMap<K, V> {
         int keyHashCode = toOptimizedHashCode(key);
         int bucketIndex = getBucketIndex(keyHashCode);
 
-        Node<K, V> current = buckets[bucketIndex];
+        Entry<K, V> current = buckets[bucketIndex];
 
         while (current != null) {
             if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
@@ -79,7 +79,7 @@ public class CustomHashMap<K, V> {
         int keyHashCode = toOptimizedHashCode(key);
         int bucketIndex = getBucketIndex(keyHashCode);
 
-        Node<K, V> current = buckets[bucketIndex];
+        Entry<K, V> current = buckets[bucketIndex];
 
         while (current != null) {
             if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
@@ -96,8 +96,8 @@ public class CustomHashMap<K, V> {
         int keyHashCode = toOptimizedHashCode(key);
         int bucketIndex = getBucketIndex(keyHashCode);
 
-        Node<K, V> prev = null;
-        Node<K, V> current = buckets[bucketIndex];
+        Entry<K, V> prev = null;
+        Entry<K, V> current = buckets[bucketIndex];
 
         while (current != null) {
             if (current.hashCode == keyHashCode && Objects.equals(current.key, key)) {
