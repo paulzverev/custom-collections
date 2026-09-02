@@ -17,7 +17,6 @@ public class CustomHashMap<K, V> {
     }
 
     private static class Entry<K, V> {
-
         private final K key;
         private V value;
         private final int hashCode;
