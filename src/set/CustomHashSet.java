@@ -1,14 +1,36 @@
 package set;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class CustomHashSet<K> {
+public class CustomHashSet<K> implements Iterable<K> {
 
     private Node<K>[] buckets;
 
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
     private int capacity;
     private int size;
+
+    private class CustomHashSetIterator implements Iterator<K> {
+
+        private int cursor = 0;
+
+        @Override
+        public boolean hasNext() {
+            return cursor < capacity;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public K next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            return (K) buckets[cursor++];
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public CustomHashSet() {
@@ -17,14 +39,20 @@ public class CustomHashSet<K> {
     }
 
     private static class Node<K> {
+
         private final K key;
         private final int hashCode;
         private Node<K> next;
-
         public Node(K key, int hashCode) {
             this.key = key;
             this.hashCode = hashCode;
         }
+
+    }
+
+    @Override
+    public Iterator<K> iterator() {
+        return new CustomHashSetIterator();
     }
 
     public void add(K key) {
