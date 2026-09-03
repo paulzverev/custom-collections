@@ -14,11 +14,13 @@ public class CustomHashSet<K> implements Iterable<K> {
 
     private class CustomHashSetIterator implements Iterator<K> {
 
-        private int cursor = 0;
+        private int bucketIndex = 0;
+        private Node<K> currentNode = null;
+        private int elementsReturned = 0;
 
         @Override
         public boolean hasNext() {
-            return cursor < capacity;
+            return elementsReturned < size;
         }
 
         @Override
@@ -28,7 +30,22 @@ public class CustomHashSet<K> implements Iterable<K> {
                 throw new NoSuchElementException();
             }
 
-            return (K) buckets[cursor++];
+            if (currentNode == null) {
+                while (bucketIndex < capacity && buckets[bucketIndex] == null) {
+                    bucketIndex++;
+                }
+                currentNode = buckets[bucketIndex];
+            }
+
+            K result = currentNode.key;
+            currentNode = currentNode.next;
+
+            if (currentNode == null) {
+                bucketIndex++;
+            }
+
+            elementsReturned++;
+            return result;
         }
     }
 
@@ -39,10 +56,10 @@ public class CustomHashSet<K> implements Iterable<K> {
     }
 
     private static class Node<K> {
-
         private final K key;
         private final int hashCode;
         private Node<K> next;
+
         public Node(K key, int hashCode) {
             this.key = key;
             this.hashCode = hashCode;
